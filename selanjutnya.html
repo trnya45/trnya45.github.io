@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#118eea">
+    <title>Loading GIF Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            
+            margin:0;
+        }
+        .gif-container {
+            display: flex; /* Menggunakan flexbox untuk menata gambar GIF */
+            justify-content: center; /* Tengah secara horizontal */
+            margin-bottom: 25px; /* Jarak di bawah kontainer GIF */
+            width: 100%; /* Lebar kontainer 100% */
+            max-width: 400px; /* Lebar maksimum untuk kontainer (disesuaikan dengan foto bawah) */
+            margin-top:-20px;
+        }
+        .gif-container img {
+            max-width: 100%; /* Mengatur gambar agar sesuai dengan lebar kontainer */
+            height: auto; /* Tinggi otomatis untuk menjaga rasio */
+        }
+        .photo {
+            margin-top: -42px; /* Menempatkan foto di bagian paling bawah */
+            cursor: pointer; /* Mengubah kursor saat hover */
+            width: 100%; /* Mengatur lebar 100% */
+            max-width: 400px; /* Mengatur lebar maksimum foto */
+            height: auto; /* Tinggi otomatis untuk menjaga rasio */
+            overflow: hidden; /* Sembunyikan bagian gambar yang keluar */
+        }
+        .photo img {
+            width: 100%; /* Lebar gambar 100% dari kontainer */
+            height: auto; /* Tinggi otomatis untuk menjaga rasio */
+            object-fit: cover; /* Menjaga aspek rasio gambar */
+        }
+        .loader {
+            display: none; /* Sembunyikan loader di awal */
+            position: fixed;
+            top: 40%;
+            left: calc(50% - 30px); /* Menggeser loader ke kiri */
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        .loader img {
+            width: 50px; /* Ukuran logo */
+            position: absolute; /* Membuat logo bertumpuk */
+        }
+         .logo1 {
+            width: 10px; /* Ukuran logo berputar yang lebih kecil */
+            z-index: 1;
+        }
+        .logo2 {
+            width: 50px; /* Ukuran logo statis */
+            z-index: 0;
+        }
+        .spin {
+            animation: spin 1s linear infinite; /* Efek putar */
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(-360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="gif-container">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEilUMIG_IMFVixTFpWb4xA5f1HJt25lbv-cc1baknB_YJeWO9FYU4SJOzdeMNkA1msFpUU-0MiI3B-llmFX122-XhqCq7-1HW4YUfaWX52rlNtfspDDvlFNj_A--xZIRknP3ycDkzm51noxYaFx_gfOck3U745QZSBwpCSesqOq1oEycuQamqaZlqoz/s16000/ezgif.com-crop%20(3).gif');" alt="GIF"> <!-- Ganti dengan URL GIF yang diinginkan -->
+    </div>
+
+    <div class="photo">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEid9dARAQbMu1UTEgpOfyH6pn4eI3_XArbELp_8lfZtysRgex-gqs0Czc9ch_O7U2lrucgBVSqGQEL33BwV3Ri4D3evjzJHJ6LBFa_K-pIPbdO6QQ3iHlTkLiqo_w2z2NbXTw83lNcWHG7T9q2n6m7N3SZ-qfZpTdsioS3dm-YIfJh4zU16QEODOLKn/s16000/AddText_06-06-08.17.04.jpg" alt="Photo"> <!-- Ganti dengan URL foto yang diinginkan -->
+    </div>
+
+    <div class="loader" id="loader">
+        <img src="https://blogger.googleusercontent.com/img/a/AVvXsEjwgx0p7026DAAQUuuIfZUMu3qK0GmmG80XeWZW2er2upYYS9WDO1sAhSaquPfbdJsdPo1NcixZojTcvPc5WLe5BW8Z2S53InXIWStAnGolXnlMQpgXodor8YedOpUeh3qpqBtNp7umO0LJ88Ngx8mTaJAMeqxPDzji5cA41GsI5uTVFT8TNmmNIoZj62wj" class="logo1 spin" alt="Logo 1"> <!-- Ganti dengan URL logo pertama (berputar) -->
+        <img src="https://blogger.googleusercontent.com/img/a/AVvXsEidHL1LKRve9HoSh9fb2LY5bYq5mnh4nBqPcA3_xlLljUvsIy3Tg-1EM2yZL_SsN_66pLa6td2qZSJo6-9BZd5voVsp6vEnHfYvPNskT8aJ9RAQJRmYayoUSpjmvxJKCCDCWFiKnIIf03glV-22p1KZS-LlaKiozKM3R0g1DPOqK_jkCwKgV3E6n2aGlAw8" class="logo2" alt="Logo 2"> <!-- Ganti dengan URL logo kedua (statis) -->
+    </div>
+
+    <script>
+        const photo = document.querySelector('.photo');
+        const loader = document.getElementById('loader');
+
+        photo.addEventListener('click', () => {
+            loader.style.display = 'block'; // Tampilkan loader
+            setTimeout(() => {
+                window.location.href = 'nomor.html'; // Ganti dengan URL halaman tujuan
+            }, 3000); // Durasi loading 3 detik
+        });
+    </script>
+
+</body>
+</html>
